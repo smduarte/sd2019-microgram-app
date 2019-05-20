@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+message Profile {
+
+	string userId = 1;
+	string fullName = 2;
+	string photoUrl = 3;
+	
+	int32 posts = 4;
+	int32 following = 5;
+	int32 followers = 6;
+}
+
+message ProfileQuery {
+	 string value = 1;
+	 bool exact = 2;
+}
+
+message UserId {
+	 string value = 1;
+}
+
+message UserPair {
+	 string userId1 = 1;
+	 string userId2 = 2;
+}
+
+message Post {
+
+	string postId = 1;
+	string ownerId = 2;
+	string mediaUrl = 3;
+	string location = 4;
+
+	int64 timestamp = 5;
+
+	int32 likes = 6;
+}
+
+message PostId {
+	 string value = 1;
+}
+
+message BoolResult {
+	 bool value = 1;
+}
+
+message PostData {
+    string userId = 1;
+    string location = 2;
+    bytes data = 4;
+}
+
+message PostIdUserId {
+    string postId = 1;
+    string userId = 2;
+}
+
+message MediaUrl {
+    string mediaUrl = 1;
+}
+
+message LikeRequest {
+    string postId = 1;
+    string userId = 2;
+    bool isLiked = 3;
+}
+
+message ProfileRequest {
+    Profile profile = 1;
+    bool autocreate = 2;
+}
+
+message FollowRequest {
+    string userId1 = 1;
+    string userId2 = 2;
+    bool isFollowing = 3;
+}
+
+service Microgram {
+
+	rpc GetProfile( ProfileRequest ) returns (Profile) {}
+	rpc SearchProfiles( ProfileQuery ) returns (stream Profile) {}
+
+	rpc Follow( FollowRequest ) returns ( BoolResult ) {}
+	rpc isFollowing( UserPair ) returns ( BoolResult ) {}
+
+    rpc GetPost( PostId ) returns (stream Post) {}
+    rpc CreatePost( PostData ) returns (PostId) {}
+
+	rpc Like( LikeRequest )  returns (BoolResult) {}
+	rpc IsLiked( PostIdUserId)  returns (BoolResult) {}
+
+	rpc GetUserPosts( UserId ) returns (stream PostId) {}
+    rpc GetFeedPosts( UserId ) returns (stream PostId) {}
+}
